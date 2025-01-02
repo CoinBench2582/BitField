@@ -95,9 +95,11 @@ namespace BitField
         #region Interfacy a přepsání
         public readonly IEnumerator<bool> GetEnumerator() => new Enumerator(this);
         readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
-
         #endregion
 
+        /// <summary>
+        /// Enumerates upon the underlying bits of a <see cref="BitField"/>
+        /// </summary>
         private struct Enumerator : IEnumerator<bool>
         {
             private byte _bits;
