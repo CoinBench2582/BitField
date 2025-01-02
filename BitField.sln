@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitField", "BitField\BitField.csproj", "{9093AE00-8924-46EC-B150-8ECB646E0CD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitField.Test", "BitField.Test\BitField.Test.csproj", "{E82519E6-4192-4937-A9D8-7EF874E2BD67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitField.Tests", "BitField.Test\BitField.Tests.csproj", "{E82519E6-4192-4937-A9D8-7EF874E2BD67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

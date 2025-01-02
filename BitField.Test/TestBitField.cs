@@ -1,4 +1,4 @@
-﻿namespace BitField.Test
+﻿namespace BitField.Tests
 {
     [TestClass]
     public sealed class TestBitField
