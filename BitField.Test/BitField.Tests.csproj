@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/3.6.1">
+﻿<Project Sdk="MSTest.Sdk/3.6.1">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -7,5 +7,9 @@
     <Nullable>enable</Nullable>
     <UseVSTest>true</UseVSTest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BitField\BitField.csproj" />
+  </ItemGroup>
 
 </Project>

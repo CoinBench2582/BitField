@@ -14,6 +14,14 @@
         }
 
         [TestMethod]
-        public void TestNothing() { }
+        public void TestIndexThrows()
+        {
+            BitField bits = new();
+
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1]);
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[8]);
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1] = true);
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[8] = true);
+        }
     }
 }
