@@ -27,14 +27,14 @@ namespace BitField
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly bool Get(int index) =>
-            (uint)index > 0
+            (uint)index >= Length
                 ? throw new ArgumentOutOfRangeException(nameof(index))
                 : (_bits & (1 << index)) != 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Set(int index, bool value)
         {
-            _ = ((uint)index > 0 ? (int?)null : 0) ?? throw new ArgumentOutOfRangeException(nameof(index));
+            _ = ((uint)index >= Length ? (int?)null : 0) ?? throw new ArgumentOutOfRangeException(nameof(index));
 
             if (value)
                 _bits |= (byte)(1 << index);
@@ -44,7 +44,7 @@ namespace BitField
         #endregion
 
         #region Konstruktory
-
+        
         #endregion
 
         #region Metody

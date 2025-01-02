@@ -18,6 +18,17 @@
         {
             BitField bits = new();
 
+            try
+            {
+                _ = bits[0];
+                _ = bits[7];
+                bits[0] = false;
+                bits[7] = false;
+            }
+            catch 
+            {
+                throw new AssertFailedException();
+            }
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1]);
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[8]);
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1] = true);
