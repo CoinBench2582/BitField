@@ -1,12 +1,15 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace BitField
 {
-    public struct BitField
+    public struct BitField : IEnumerable<bool>
     {
         #region Pole
         private byte _bits;
         public const byte Length = 8;
+        internal static readonly BitField Empty = new();
         #endregion
 
         #region Vlastnosti
@@ -90,7 +93,31 @@ namespace BitField
         #endregion
 
         #region Interfacy a přepsání
+        public readonly IEnumerator<bool> GetEnumerator() => new Enumerator(this);
+        readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         #endregion
+
+        private struct Enumerator : IEnumerator<bool>
+        {
+            private byte _bits;
+            private int _index = -1;
+
+            public readonly bool Current => (_bits & (1 << _index)) != 0;
+
+            readonly object IEnumerator.Current => Current;
+
+            internal Enumerator(BitField bitField) => this._bits = bitField._bits;
+
+            public void Dispose() => _bits = 0;
+
+            public bool MoveNext()
+            {
+                _index++;
+                return _index < Length;
+            }
+
+            public void Reset() => _index = -1;
+        }
     }
 }
