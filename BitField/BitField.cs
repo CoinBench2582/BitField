@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Numerics;
 
 namespace BitField
 {
-    public struct BitField : IEnumerable<bool>, IEquatable<BitField>
+    public struct BitField : IEnumerable<bool>, IEquatable<BitField>, IBitwiseOperators<BitField, BitField, BitField>, IMinMaxValue<BitField>
     {
         #region Pole
         private byte _bits;
         public const byte Length = 8;
         internal static readonly BitField Empty = new();
+
+        public static BitField MaxValue { get; } = new(byte.MaxValue);
+        public static BitField MinValue => Empty;
         #endregion
 
         #region Vlastnosti
@@ -121,6 +125,27 @@ namespace BitField
         /// Compares if the underlying bit are different
         /// </summary>
         public static bool operator !=(BitField left, BitField right) => left._bits != right._bits;
+
+        /// <summary>
+        /// Computes the bit AND between the underlying bits
+        /// </summary>
+        /// <returns>New field containing the resulting bits in order</returns>
+        public static BitField operator &(BitField left, BitField right) => new((byte)(left._bits & right._bits));
+        /// <summary>
+        /// Computes the bit OR between the underlying bits
+        /// </summary>
+        /// <returns>New field containing the resulting bits in order</returns>
+        public static BitField operator |(BitField left, BitField right) => new((byte)(left._bits | right._bits));
+        /// <summary>
+        /// Computes the bit XOR between the underlying bits
+        /// </summary>
+        /// <returns>New field containing the resulting bits in order</returns>
+        public static BitField operator ^(BitField left, BitField right) => new((byte)(left._bits ^ right._bits));
+        /// <summary>
+        /// Computes the complementary bits for the underlying bits
+        /// </summary>
+        /// <returns>New field containing the complementary bits in order</returns>
+        public static BitField operator ~(BitField value) => new((byte)~value._bits);
         #endregion
 
         #region Interfacy a přepsání
