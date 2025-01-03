@@ -181,44 +181,5 @@ namespace BitField
         public override readonly bool Equals(object? obj) => obj is BitField bitField && this._bits == bitField._bits;
         public override readonly int GetHashCode() => _bits.GetHashCode();
         #endregion
-
-        /// <summary>
-        /// Enumerates upon the underlying bits of a <see cref="BitField"/>
-        /// </summary>
-        private struct BitEnumerator : IEnumerator<bool>
-        {
-            private byte _bits;
-            private int _index = -1;
-
-            /// <summary>
-            /// Returns the current bit as a <see langword="bool"/>
-            /// </summary>
-            public readonly bool Current => (_bits & (1 << _index)) != 0;
-
-            readonly object IEnumerator.Current => Current;
-
-            internal BitEnumerator(BitField bitField) => this._bits = (byte)bitField;
-
-            /// <summary>
-            /// Invalidates the enumerator (will yield only <see langword="false"/> now)
-            /// </summary>
-            public void Dispose() => _bits = 0;
-
-            /// <summary>
-            /// Moves to the first bit
-            /// </summary>
-            /// <returns>If we are within bounds</returns>
-            public bool MoveNext()
-            {
-                _index++;
-                return _index < Length;
-            }
-
-            /// <summary>
-            /// Prepares for new enumeration.
-            /// </summary>
-            /// <remarks>First bit cannot be yielded before the first call of <see cref="MoveNext"/></remarks>
-            public void Reset() => _index = -1;
-        }
     }
 }
