@@ -21,6 +21,21 @@ namespace BitField
         internal BitEnumerator(BitField bitField) => this._bits = (byte)bitField;
 
         /// <summary>
+        /// Clones a bit enumerator
+        /// </summary>
+        /// <param name="bitEnumerator">the <see cref="BitEnumerator"/> to clone</param>
+        /// <exception cref="ArgumentException">the provided <paramref name="bitEnumerator"/> is not of type <see cref="BitEnumerator"/></exception>
+        internal BitEnumerator(IEnumerator<bool> bitEnumerator)
+        {
+            if (bitEnumerator is not BitEnumerator enumerator)
+                throw new ArgumentException($"Invalid type", nameof(bitEnumerator));
+            this._bits = enumerator._bits;
+            this._index = enumerator._index;
+        }
+
+        public static explicit operator BitField(BitEnumerator bitEnumerator) => new(bitEnumerator._bits);
+
+        /// <summary>
         /// Moves to the first bit
         /// </summary>
         /// <returns>If we are within bounds</returns>
