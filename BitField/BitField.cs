@@ -73,7 +73,8 @@ namespace BitField
             Span<bool> bitsSpan = bits;
             byte mask = 0;
             for (int i = 0; i < len; i++)
-                mask |= (byte)((bitsSpan[i] ? 1 : 0) << i);
+                if (bitsSpan[i])
+                    mask |= (byte)(1 << i);
             _bits = mask;
         }
 
@@ -86,6 +87,29 @@ namespace BitField
 
         #region Metody
 
+        #endregion
+
+        #region Přetypování
+        public static explicit operator byte(BitField bitField) => bitField._bits;
+        public static explicit operator BitField(byte bits) => new(bits);
+
+        public static explicit operator BitField(bool[] bits) => new(bits);
+#pragma warning disable IDE0305 // Zjednodušit inicializaci kolekce
+        public static explicit operator bool[](BitField bitField) => bitField.ToArray();
+#pragma warning restore IDE0305 // Zjednodušit inicializaci kolekce
+
+        /// <summary>
+        /// Collects the stored bits as <see langword="bool"/>s into an array
+        /// </summary>
+        /// <returns><see langword="bool"/>[] containing 8 bits</returns>
+        public readonly bool[] ToArray()
+        {
+            bool[] bits = new bool[Length];
+            Span<bool> bitsSpan = bits;
+            for (int i = 0; i < Length; i++)
+                bitsSpan[i] = (this._bits & (1 << i)) != 0;
+            return bits;
+        }
         #endregion
 
         #region Operátory

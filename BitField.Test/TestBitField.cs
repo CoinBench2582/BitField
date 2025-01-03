@@ -6,6 +6,26 @@
         private static readonly byte testByte = 0b1010101;
         private static readonly bool[] testBitArray = { true, false, true, false, true, false, true };
 
+        internal static IEqualityComparer<T[]> GetArrayEqualityComparer<T>() where T : IEquatable<T>
+            => EqualityComparer<T[]>.Create(
+                static (first, second) =>
+                {
+                    if (first is null)
+                        return second is null;
+                    if (second is null)
+                        return false;
+                    if (first.Length != second.Length)
+                        return false;
+
+                    int length = first.Length;
+                    Span<T> firstSpan = first;
+                    Span<T> secondSpan = second;
+                    for (int i = 0; i < length; i++)
+                        if (!first[i].Equals(secondSpan[i]))
+                            return false;
+                    return true;
+                });
+
         /// <summary>
         /// This method is called once for the test class, before any tests of the class are run.
         /// </summary>
@@ -58,6 +78,19 @@
 
             while (first.MoveNext() && second.MoveNext())
                 Assert.AreEqual(first.Current, second.Current);
+        }
+
+        [TestMethod]
+        public void TestConvert()
+        {
+            BitField fromByte = (BitField)testByte;
+            BitField fromArray = (BitField)testBitArray;
+
+            byte fromArrayField = (byte)fromArray;
+            bool[] fromByteField = (bool[])fromByte;
+
+            Assert.AreEqual(testByte, fromArrayField);
+            Assert.AreEqual([..testBitArray, false], fromByteField, comparer: GetArrayEqualityComparer<bool>());
         }
     }
 }
