@@ -3,8 +3,8 @@
     [TestClass]
     public sealed class TestBitField
     {
-        private static readonly byte testByte = 0b1010101;
-        private static readonly bool[] testBitArray = { true, false, true, false, true, false, true };
+        private static readonly byte testByte = 0b101010;
+        private static readonly bool[] testBitArray = { false, true, false, true, false, true };
 
         internal static IEqualityComparer<T[]> GetArrayEqualityComparer<T>() where T : IEquatable<T>
             => EqualityComparer<T[]>.Create(
@@ -48,10 +48,7 @@
                 bits[0] = false;
                 bits[7] = false;
             }
-            catch 
-            {
-                throw new AssertFailedException();
-            }
+            catch { throw new AssertFailedException(); }
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1]);
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[8]);
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => bits[-1] = true);
@@ -90,7 +87,7 @@
             bool[] fromByteField = (bool[])fromByte;
 
             Assert.AreEqual(testByte, fromArrayField);
-            Assert.AreEqual([..testBitArray, false], fromByteField, comparer: GetArrayEqualityComparer<bool>());
+            Assert.AreEqual([..testBitArray, false, false], fromByteField, comparer: GetArrayEqualityComparer<bool>());
         }
     }
 }

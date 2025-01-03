@@ -72,7 +72,12 @@ namespace BitField
         /// <summary>
         /// Initialises a field of bits from the provided <paramref name="bits"/>
         /// </summary>
-        /// <param name="bits"></param>
+        /// <remarks>
+        /// Bits are read from right to left,
+        /// meaning the rightmost bit is going to be at index <c>0</c>
+        /// and the leftmost bit at the end index <c>7</c>
+        /// </remarks>
+        /// <param name="bits">Bits to copy</param>
         public BitField(byte bits) => _bits = bits;
 
         /// <summary>
@@ -107,7 +112,17 @@ namespace BitField
         #endregion
 
         #region Přetypování
+        /// <remarks>
+        /// Bits are read from right to left,
+        /// meaning the bit at index <c>0</c> is going to be the rightmost one
+        /// and the bit at the end index <c>7</c> the leftmost one
+        /// </remarks>
         public static explicit operator byte(BitField bitField) => bitField._bits;
+        /// <remarks>
+        /// Bits are read from right to left,
+        /// meaning the rightmost bit is going to be at index <c>0</c>
+        /// and the leftmost bit at the end index <c>7</c>
+        /// </remarks>
         public static explicit operator BitField(byte bits) => new(bits);
 
         public static explicit operator BitField(bool[] bits) => new(bits);
