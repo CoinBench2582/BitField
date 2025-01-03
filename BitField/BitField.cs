@@ -8,15 +8,28 @@ namespace BitField
     public struct BitField : IEnumerable<bool>, IEquatable<BitField>, IBitwiseOperators<BitField, BitField, BitField>, IMinMaxValue<BitField>
     {
         #region Pole
+        /// <summary>
+        /// The <see langword="byte"/> containing the underlying bits.
+        /// The written order is from right to left due to access by shifting.
+        /// </summary>
         private byte _bits;
-        public const byte Length = 8;
-        internal static readonly BitField Empty = new();
 
-        public static BitField MaxValue { get; } = new(byte.MaxValue);
-        public static BitField MinValue => Empty;
+        /// <summary>
+        /// The number of bits a field contains.
+        /// Proportinonal to the number of bits in a <see langword="byte"/>.
+        /// </summary>
+        public const byte Length = 8;
+
+        /// <summary>
+        /// A field of bits with all values <c>0</c>
+        /// </summary>
+        internal static readonly BitField Empty = new();
         #endregion
 
         #region Vlastnosti
+        public static BitField MaxValue { get; } = new(byte.MaxValue);
+        public static BitField MinValue => Empty;
+
         /// <summary>
         /// Accesses bits stored in the field
         /// </summary>
@@ -86,7 +99,7 @@ namespace BitField
         /// Initialises a field of bits with values copied from the provided <paramref name="bitField"/>
         /// </summary>
         /// <param name="bitField">field of bits to copy</param>
-        public BitField(BitField bitField) => _bits = bitField._bits;
+        public BitField(BitField bitField) => this._bits = bitField._bits;
         #endregion
 
         #region Metody
@@ -149,8 +162,8 @@ namespace BitField
         #endregion
 
         #region Interfacy a přepsání
-        public readonly IEnumerator<bool> GetEnumerator() => new Enumerator(this);
-        readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+        public readonly IEnumerator<bool> GetEnumerator() => new BitEnumerator(this);
+        readonly IEnumerator IEnumerable.GetEnumerator() => new BitEnumerator(this);
 
         /// <summary>
         /// Returns a value indicating if the underlying bit fields are the same.
@@ -172,25 +185,39 @@ namespace BitField
         /// <summary>
         /// Enumerates upon the underlying bits of a <see cref="BitField"/>
         /// </summary>
-        private struct Enumerator : IEnumerator<bool>
+        private struct BitEnumerator : IEnumerator<bool>
         {
             private byte _bits;
             private int _index = -1;
 
+            /// <summary>
+            /// Returns the current bit as a <see langword="bool"/>
+            /// </summary>
             public readonly bool Current => (_bits & (1 << _index)) != 0;
 
             readonly object IEnumerator.Current => Current;
 
-            internal Enumerator(BitField bitField) => this._bits = bitField._bits;
+            internal BitEnumerator(BitField bitField) => this._bits = (byte)bitField;
 
+            /// <summary>
+            /// Invalidates the enumerator (will yield only <see langword="false"/> now)
+            /// </summary>
             public void Dispose() => _bits = 0;
 
+            /// <summary>
+            /// Moves to the first bit
+            /// </summary>
+            /// <returns>If we are within bounds</returns>
             public bool MoveNext()
             {
                 _index++;
                 return _index < Length;
             }
 
+            /// <summary>
+            /// Prepares for new enumeration.
+            /// </summary>
+            /// <remarks>First bit cannot be yielded before the first call of <see cref="MoveNext"/></remarks>
             public void Reset() => _index = -1;
         }
     }
