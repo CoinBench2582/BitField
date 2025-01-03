@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace BitField
 {
-    public struct BitField : IEnumerable<bool>
+    public struct BitField : IEnumerable<bool>, IEquatable<BitField>
     {
         #region Pole
         private byte _bits;
@@ -113,12 +113,35 @@ namespace BitField
         #endregion
 
         #region Operátory
-
+        /// <summary>
+        /// Compares if the underlying bit are the same
+        /// </summary>
+        public static bool operator ==(BitField left, BitField right) => left._bits == right._bits;
+        /// <summary>
+        /// Compares if the underlying bit are different
+        /// </summary>
+        public static bool operator !=(BitField left, BitField right) => left._bits != right._bits;
         #endregion
 
         #region Interfacy a přepsání
         public readonly IEnumerator<bool> GetEnumerator() => new Enumerator(this);
         readonly IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+
+        /// <summary>
+        /// Returns a value indicating if the underlying bit fields are the same.
+        /// </summary>
+        /// <returns>if the underlying bits are the same</returns>
+        public static bool Equals(BitField left, BitField right) => left._bits == right._bits;
+        /// <summary>
+        /// Returns if the underlying bit fields are the same.
+        /// </summary>
+        /// <param name="other">field of bits to compare to</param>
+        /// <returns>the underlying bits are the same</returns>
+        public readonly bool Equals(BitField other) => this._bits == other._bits;
+
+        public override readonly string ToString() => _bits.ToString();
+        public override readonly bool Equals(object? obj) => obj is BitField bitField && this._bits == bitField._bits;
+        public override readonly int GetHashCode() => _bits.GetHashCode();
         #endregion
 
         /// <summary>
