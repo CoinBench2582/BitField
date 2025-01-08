@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace BitField
 {
-    public class BitArray : IEnumerable<bool>, IEnumerable<BitField>, ICollection
+    public class BitArray : /*IEnumerable<bool>,*/ IEnumerable<BitField>, ICollection
     {
         private readonly BitField[] _bitFields;
 
