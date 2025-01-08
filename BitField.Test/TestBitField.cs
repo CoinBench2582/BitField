@@ -1,4 +1,6 @@
-﻿namespace BitField.Tests
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace BitField.Tests
 {
     [TestClass]
     public sealed class TestBitField
@@ -88,6 +90,53 @@
 
             Assert.AreEqual(testByte, fromArrayField);
             Assert.AreEqual([..testBitArray, false, false], fromByteField, comparer: GetArrayEqualityComparer<bool>());
+        }
+
+        [TestMethod]
+        public void TestBitOperations()
+        {
+            #region Consts
+            const byte low = 0b00001111;
+            const byte high = 0b11110000;
+            const byte zigLow = 0b01010101;
+            const byte zigHigh = 0b10101010;
+            const byte all = 0b11111111;
+            const byte none = 0b00000000;
+            #endregion
+            #region Fields
+            BitField Low = new(low);
+            BitField High = new(high);
+            BitField ZigLow = new(zigLow);
+            BitField ZigHigh = new(zigHigh);
+            #endregion
+
+            #region Operations
+            BitField LowAHigh = Low & High;
+            BitField LowOHigh = Low | High;
+            BitField LowXHigh = Low ^ High;
+            BitField LowN = ~Low;
+            BitField HighN = ~High;
+
+            BitField ZigA = ZigLow & ZigHigh;
+            BitField ZigO = ZigLow | ZigHigh;
+            BitField ZigX = ZigLow ^ ZigHigh;
+            BitField ZigLN = ~ZigLow;
+            BitField ZigHN = ~ZigHigh;
+            #endregion
+
+            #region Asserts
+            Assert.AreEqual(none, (byte)LowAHigh);
+            Assert.AreEqual(all, (byte)LowOHigh);
+            Assert.AreEqual(all, (byte)LowXHigh);
+            Assert.AreEqual(high, (byte)LowN);
+            Assert.AreEqual(low, (byte)HighN);
+
+            Assert.AreEqual(none, (byte)ZigA);
+            Assert.AreEqual(all, (byte)ZigO);
+            Assert.AreEqual(all, (byte)ZigX);
+            Assert.AreEqual(zigHigh, (byte)ZigLN);
+            Assert.AreEqual(zigLow, (byte)ZigHN);
+            #endregion
         }
     }
 }
