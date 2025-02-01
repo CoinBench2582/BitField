@@ -3,7 +3,7 @@
 namespace BitField.Tests
 {
     [TestClass]
-    public sealed class TestBitField
+    public sealed class BitFieldTests
     {
         private static readonly byte testByte = 0b101010;
         private static readonly bool[] testBitArray = { false, true, false, true, false, true };
@@ -39,7 +39,7 @@ namespace BitField.Tests
         }
 
         [TestMethod]
-        public void TestIndexThrows()
+        public void IndexingTest()
         {
             BitField bits = new();
 
@@ -58,7 +58,7 @@ namespace BitField.Tests
         }
 
         [TestMethod]
-        public void TestConstructingThrows()
+        public void ConstructingTest()
         {
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(static () => _ = new BitField(new bool[16]));
 #pragma warning disable CS8625 // Literál null nejde převést na odkazový typ, který nemůže mít hodnotu null.
@@ -67,7 +67,7 @@ namespace BitField.Tests
         }
 
         [TestMethod]
-        public void TestInitialisedValue()
+        public void InitialisedValueTest()
         {
             BitField fromByte = new(testByte);
             BitField fromArray = new(testBitArray);
@@ -80,7 +80,7 @@ namespace BitField.Tests
         }
 
         [TestMethod]
-        public void TestConvert()
+        public void ConversionsTest()
         {
             BitField fromByte = (BitField)testByte;
             BitField fromArray = (BitField)testBitArray;
@@ -93,7 +93,7 @@ namespace BitField.Tests
         }
 
         [TestMethod]
-        public void TestBitOperations()
+        public void BitOperationsTest()
         {
             #region Consts
             const byte low = 0b00001111;
