@@ -10,11 +10,12 @@ namespace BitField
         private readonly BitField[] _bitFields;
 
         #region Vlastnosti
+        private int countOfBits;
         /// <summary>
         /// Length in bits
         /// </summary>
-        public int Length => _bitFields.Length * 8;
-        int ICollection.Count => Length;
+        public int Length => countOfBits;
+        int ICollection.Count => countOfBits;
         bool ICollection.IsSynchronized => false;
         object ICollection.SyncRoot => this;
         #endregion
@@ -27,12 +28,12 @@ namespace BitField
         /// <exception cref="ArgumentOutOfRangeException">the <paramref name="index"/> is out of range</exception>
         public bool this[int index]
         {
-            get => ((uint)index >= (uint)Length)
+            get => ((uint)index >= (uint)countOfBits)
                 ? throw new ArgumentOutOfRangeException(nameof(index))
                 : _bitFields[index / 8][index % 8];
             set
             {
-                if ((uint)index >= (uint)Length)
+                if ((uint)index >= (uint)countOfBits)
                     throw new ArgumentOutOfRangeException(nameof(index));
                 _bitFields[index / 8][index % 8] = value;
             }
@@ -53,30 +54,35 @@ namespace BitField
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(length, nameof(length));
 
             _bitFields = new BitField[(length + 7) / 8];
+            countOfBits = length;
         }
         #endregion
 
         #region Interfacy a přepsání
-        public IEnumerator<bool> GetEnumerator() => new BitArrayEnumerator(_bitFields);
+        public IEnumerator<bool> GetEnumerator() => new BitArrayEnumerator(_bitFields, countOfBits);
         IEnumerator<BitField> IEnumerable<BitField>.GetEnumerator() => ((IEnumerable<BitField>)_bitFields).GetEnumerator();
         void ICollection.CopyTo(Array array, int index) => _bitFields.CopyTo(array, index);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         #endregion
+    }
 
-        private struct BitArrayEnumerator : IEnumerator<bool>
+    internal struct BitArrayEnumerator : IEnumerator<bool>
+    {
+        private BitField[] _bits;
+        private int position = -1;
+        private readonly int len;
+
+        public readonly bool Current => _bits[position / 8][position % 8];
+        readonly object IEnumerator.Current => Current;
+
+        internal BitArrayEnumerator(BitField[] target, int length)
         {
-            private BitField[] _bits;
-            private int position = -1;
-
-            private readonly int Len => _bits.Length;
-            public readonly bool Current => _bits[position / 8][position % 8];
-            readonly object IEnumerator.Current => Current;
-
-            internal BitArrayEnumerator(BitField[] target) => _bits = target;
-
-            public void Dispose() => _bits = null!;
-            public bool MoveNext() => ++position < Len;
-            public void Reset() => position = -1;
+            _bits = target;
+            len = length;
         }
+
+        public void Dispose() => _bits = null!;
+        public bool MoveNext() => ++position < len;
+        public void Reset() => position = -1;
     }
 }
