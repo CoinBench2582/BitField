@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace BitField
 {
-    public class BitArray : /*IEnumerable<bool>,*/ IEnumerable<BitField>, ICollection
+    public class BitArray : IEnumerable<bool>, IEnumerable<BitField>, ICollection
     {
         private readonly BitField[] _bitFields;
 
@@ -45,23 +44,39 @@ namespace BitField
         /// </summary>
         /// <param name="length">
         /// Minimal amount of bits to store.
-        /// Is rounded up for divisibility by 8.
+        /// Rounded up for divisibility by 8.
         /// Must not be negative.
         /// </param>
         /// <exception cref="ArgumentOutOfRangeException">the <paramref name="length"/> was negative</exception>
         public BitArray(int length)
         {
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative.");
+            ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
 
             _bitFields = new BitField[(length + 7) / 8];
         }
         #endregion
 
         #region Interfacy a přepsání
+        public IEnumerator<bool> GetEnumerator() => new BitArrayEnumerator(_bitFields);
         IEnumerator<BitField> IEnumerable<BitField>.GetEnumerator() => ((IEnumerable<BitField>)_bitFields).GetEnumerator();
         void ICollection.CopyTo(Array array, int index) => _bitFields.CopyTo(array, index);
-        public IEnumerator GetEnumerator() => _bitFields.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         #endregion
+
+        private struct BitArrayEnumerator : IEnumerator<bool>
+        {
+            private BitField[] _bits;
+            private int position = -1;
+
+            private readonly int Len => _bits.Length;
+            public readonly bool Current => _bits[position / 8][position % 8];
+            readonly object IEnumerator.Current => Current;
+
+            internal BitArrayEnumerator(BitField[] target) => _bits = target;
+
+            public void Dispose() => _bits = null!;
+            public bool MoveNext() => ++position < Len;
+            public void Reset() => position = -1;
+        }
     }
 }
