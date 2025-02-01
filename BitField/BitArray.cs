@@ -45,12 +45,12 @@ namespace BitField
         /// <param name="length">
         /// Minimal amount of bits to store.
         /// Rounded up for divisibility by 8.
-        /// Must not be negative.
+        /// Must be positive.
         /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">the <paramref name="length"/> was negative</exception>
+        /// <exception cref="ArgumentOutOfRangeException">the <paramref name="length"/> was not positive</exception>
         public BitArray(int length)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(length, nameof(length));
 
             _bitFields = new BitField[(length + 7) / 8];
         }
